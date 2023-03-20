@@ -7,6 +7,7 @@ from rest_framework.viewsets import ModelViewSet, ViewSet
 
 from home.api.v1.serializers import SignupSerializer, UserSerializer, UserTaskSerializer
 from home.models import Task
+from users.forms import User
 
 
 class SignupViewSet(ModelViewSet):
@@ -40,4 +41,13 @@ class UserTaskViewSet(ModelViewSet):
 
     def get_queryset(self):
         queryset = Task.objects.filter(user=self.request.user)
+        return queryset
+
+
+class UserProfileViewSet(ModelViewSet):
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = User.objects.filter(id=self.request.user.id)
         return queryset
