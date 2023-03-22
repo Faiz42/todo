@@ -32,7 +32,7 @@ class LoginViewSet(ViewSet):
         if serializer.is_valid():
             user = serializer.validated_data["user"]
             token, created = Token.objects.get_or_create(user=user)
-            user_serializer = UserSerializer(user)
+            user_serializer = UserSerializer(user, context={"request": request})
             return Response({"token": token.key, "user": user_serializer.data})
         return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
