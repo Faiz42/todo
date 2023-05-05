@@ -52,10 +52,10 @@ class UserTaskViewSet(ModelViewSet):
         if category:
             if category == 'weekly':
                 new_today = datetime.date.today() + datetime.timedelta(days=7)
-                queryset = queryset.filter(task_date_time__date__gte=new_today)
-            if category == 'monthly':
+                queryset = queryset.filter(task_date_time__date__range=[datetime.date.today(), new_today])
+            elif category == 'monthly':
                 new_today = datetime.date.today() + datetime.timedelta(days=30)
-                queryset = queryset.filter(task_date_time__date__gte=new_today)
+                queryset = queryset.filter(task_date_time__date__range=[datetime.date.today(), new_today])
             else:
                 new_today = datetime.date.today()
                 queryset = queryset.filter(task_date_time__date=new_today)
