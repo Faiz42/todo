@@ -42,11 +42,26 @@ class UserTaskViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
+        queryset = Task.objects.filter(user=self.request.user)
         today = datetime.date.today()
         # today = '2023-03-21'
         is_complete = self.request.query_params.get("is_complete")
         date = self.request.query_params.get("date")
-        queryset = Task.objects.filter(user=self.request.user)
+        category = self.request.query_params.get("category")
+
+        if category:
+            if category == 'weekly':
+                new_today = datetime.date.today() + datetime.timedelta(days=7)
+                queryset = queryset.filter(task_date_time__date__gte=new_today)
+            if category == 'monthly':
+                new_today = datetime.date.today() + datetime.timedelta(days=30)
+                queryset = queryset.filter(task_date_time__date__gte=new_today)
+            else:
+                new_today = datetime.date.today()
+                queryset = queryset.filter(task_date_time__date=new_today)
+            # queryset = queryset.filter(task_date_time__date__gte=new_today)
+            return queryset
+
         if is_complete:
             queryset = queryset.filter(is_complete=is_complete)
         if date:
